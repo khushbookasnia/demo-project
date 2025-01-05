@@ -1,11 +1,21 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Filter, Plus, Search, List, SortAsc } from "lucide-react";
+import { Filter, Plus, Search, List, SortAsc, Grid } from "lucide-react";
 import { Input } from "../ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-export function TaskListHeader() {
+interface TaskListHeaderProps {
+  view: "list" | "grid";
+  onViewChange: (view: "list" | "grid") => void;
+  onCreateClick: () => void;
+}
+
+export function TaskListHeader({
+  view,
+  onViewChange,
+  onCreateClick,
+}: TaskListHeaderProps) {
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between py-3 space-y-3 sm:space-y-0 sm:space-x-3">
       <div className="flex items-center space-x-2 sm:space-x-3">
@@ -47,17 +57,36 @@ export function TaskListHeader() {
           <span className="hidden sm:inline">Sort</span>
         </Button>
 
-        <Button
-          variant="outline"
-          className="h-8 rounded-full   w-auto flex items-center justify-center text-xs px-2"
-        >
-          <List className="mr-1 h-3 w-3  " />
-          <span className="hidden sm:inline">List</span>
-        </Button>
+        <div className="flex items-center space-x-2 rounded-full w-auto border justify-center text-xs ">
+          <Button
+            variant="ghost"
+            className={`h-8 p-2 rounded-full flex items-center justify-center ${
+              view === "list"
+                ? "bg-zinc-700 text-white dark:bg-white dark:text-zinc-700 border"
+                : "bg-transparent"
+            }`}
+            onClick={() => onViewChange("list")}
+          >
+            <List className="h-2 w-2 " />
+          </Button>
+
+          <Button
+            variant="ghost"
+            className={`h-8 p-2 rounded-full flex items-center justify-center ${
+              view === "grid"
+                ? "bg-zinc-700 text-white dark:bg-white dark:text-zinc-700 border"
+                : "bg-transparent"
+            }`}
+            onClick={() => onViewChange("grid")}
+          >
+            <Grid className="h-2 w-2" />
+          </Button>
+        </div>
 
         <Button
           variant="outline"
           className="h-8 rounded-full w-auto   flex items-center justify-center text-xs px-2"
+          onClick={onCreateClick}
         >
           <Plus className="mr-1 h-3 w-3  " />
           <span className="hidden sm:inline">Create</span>

@@ -8,6 +8,7 @@ export interface Task {
   summary: string;
   status: TaskStatus;
   labels: string[];
+  name: string;
   assignees: {
     id: string;
     name: string;

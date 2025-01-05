@@ -1,23 +1,35 @@
 "use client";
 
 import { Header } from "@/components/layout/header";
-import { TaskTable } from "@/components/tasks/task-table";
 import { TaskListHeader } from "@/components/tasks/task-list-header";
-import { MOCK_TASKS } from "@/components/tasks/helper";
+import { useState } from "react";
+import { TaskListContent } from "@/components/tasks/task-list-content";
+import { TaskCreateModal } from "@/components/tasks/task-create-modal";
 
-// Define the Task interface
-
-// Ensure MOCK_TASKS aligns with Task[]
-
-// Main component
 export default function Home() {
+  const [view, setView] = useState<"list" | "grid">("list");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleViewChange = (newView: "list" | "grid") => {
+    setView(newView);
+  };
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
   return (
     <div className="m-4 bg-background">
       <Header />
       <main className="container mx-auto py-4">
-        <TaskListHeader />
-        <TaskTable tasks={MOCK_TASKS} />
+        <TaskListHeader
+          view={view}
+          onViewChange={handleViewChange}
+          onCreateClick={toggleModal}
+        />
+        <TaskListContent view={view} />
       </main>
+      {isModalOpen && <TaskCreateModal onClose={toggleModal} />}
     </div>
   );
 }
