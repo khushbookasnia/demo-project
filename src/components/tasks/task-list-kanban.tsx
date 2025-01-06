@@ -17,27 +17,9 @@ const statuses: TaskStatus[] = ["to-do", "in-progress", "done", "backlog"];
 
 export default function KanbanBoard() {
   const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
-  const [draggedCardDimensions, setDraggedCardDimensions] = useState<{
-    height: number;
-    width: number;
-  } | null>(null);
 
   const getTasksByStatus = (status: string): Task[] =>
     tasks.filter((task) => task.status === status);
-
-  const onDragStart = (start: { draggableId: string }) => {
-    const draggedCardElement = document.querySelector(
-      `[data-rbd-drag-handle-draggable-id='${start.draggableId}']`
-    );
-
-    if (draggedCardElement) {
-      const rect = draggedCardElement.getBoundingClientRect();
-      setDraggedCardDimensions({
-        height: rect.height,
-        width: rect.width,
-      });
-    }
-  };
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -50,18 +32,16 @@ export default function KanbanBoard() {
     updatedTasks.splice(destination.index, 0, movedTask);
 
     setTasks(updatedTasks);
-    setDraggedCardDimensions(null); // Reset dimensions
   };
 
   return (
-    <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <div className="grid grid-cols-4 gap-5 p-4 bg-background rounded-md border">
         {statuses.map((status) => (
           <DroppableColumn
             key={status}
             status={status}
             tasks={getTasksByStatus(status)}
-            draggedCardDimensions={draggedCardDimensions}
           />
         ))}
       </div>
@@ -72,14 +52,9 @@ export default function KanbanBoard() {
 type DroppableColumnProps = {
   status: string;
   tasks: Task[];
-  draggedCardDimensions: { height: number; width: number } | null;
 };
 
-function DroppableColumn({
-  status,
-  tasks,
-  draggedCardDimensions,
-}: DroppableColumnProps) {
+function DroppableColumn({ status, tasks }: DroppableColumnProps) {
   return (
     <Droppable droppableId={status}>
       {(provided, snapshot) => (
@@ -96,15 +71,7 @@ function DroppableColumn({
           ) : (
             <p className="text-sm text-gray-500">No tasks here</p>
           )}
-          {snapshot.isDraggingOver && draggedCardDimensions && (
-            <div
-              className="rounded-md border border-dashed shadow-none bg-gray-100 dark:bg-zinc-800"
-              style={{
-                height: `${draggedCardDimensions.height}px`,
-                width: `${draggedCardDimensions.width}px`,
-              }}
-            ></div>
-          )}
+          {snapshot.isDraggingOver && <div className="h-[300px] w-full"></div>}
           {provided.placeholder}
         </div>
       )}
@@ -152,7 +119,9 @@ function TaskCard({ task, index }: TaskCardProps) {
           >
             <div
               className={` p-3 rounded-md border shadow-none dark:bg-zinc-800
- transform transition-transform duration-200 ${isDragging ? "rotate-2" : ""}`}
+ transform transition-transform duration-200 ${
+   isDragging ? "rotate-2 bg-gray-100 shadow-md" : ""
+ }`}
               style={{
                 transform: isDragging ? "rotate(-5deg)" : "rotate(0deg)",
               }}
