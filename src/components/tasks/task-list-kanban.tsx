@@ -138,42 +138,54 @@ type TaskCardProps = {
 function TaskCard({ task, index }: TaskCardProps) {
   return (
     <Draggable draggableId={String(task.id)} index={index}>
-      {(provided) => (
-        <div
-          className="p-3 rounded-md border shadow-none dark:bg-zinc-800"
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <div className="p-0">
-            <div className="flex justify-between">
-              <h5 className="text-[13px] font-[600] text-foreground line-height-[12px]">
-                {task.name}
-              </h5>
+      {(provided, snapshot) => {
+        const isDragging = snapshot.isDragging;
+
+        return (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            style={{
+              ...provided.draggableProps.style,
+            }}
+          >
+            <div
+              className={` p-3 rounded-md border shadow-none dark:bg-zinc-800
+ transform transition-transform duration-200 ${isDragging ? "rotate-2" : ""}`}
+              style={{
+                transform: isDragging ? "rotate(-5deg)" : "rotate(0deg)",
+              }}
+            >
+              <div className="flex justify-between">
+                <h5 className="text-[13px] font-[600] text-foreground line-height-[12px]">
+                  {task.name}
+                </h5>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-[12px] text-foreground line-height-[12px]">
+                  {task.summary}
+                </span>
+              </div>
+              {task.dueDate && (
+                <Badge
+                  className={`mt-2 text-xs font-[400] ${
+                    task.priority === "high"
+                      ? "text-[#FF6161] bg-red-50 dark:bg-opacity-30 hover:text-[#FF6161] hover:bg-red-100 dark:hover:bg-opacity-40"
+                      : "text-yellow-600 bg-yellow-50 dark:bg-opacity-30 hover:text-yellow-600 hover:bg-yellow-100 dark:hover:bg-opacity-40"
+                  }`}
+                >
+                  Due:{" "}
+                  {new Date(task.dueDate).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </Badge>
+              )}
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-[12px] text-foreground line-height-[12px]">
-                {task.summary}
-              </span>
-            </div>
-            {task.dueDate && (
-              <Badge
-                className={`mt-2 text-xs font-[400] ${
-                  task.priority === "high"
-                    ? "text-[#FF6161] bg-red-50 dark:bg-opacity-30 hover:text-[#FF6161] hover:bg-red-100 dark:hover:bg-opacity-40"
-                    : "text-yellow-600 bg-yellow-50 dark:bg-opacity-30 hover:text-yellow-600 hover:bg-yellow-100 dark:hover:bg-opacity-40"
-                }`}
-              >
-                Due:{" "}
-                {new Date(task.dueDate).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })}
-              </Badge>
-            )}
           </div>
-        </div>
-      )}
+        );
+      }}
     </Draggable>
   );
 }
