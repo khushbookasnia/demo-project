@@ -1,5 +1,5 @@
 import { MOCK_TASKS } from "./helper";
-import KanbanBoard from "./task-list";
+import KanbanBoard from "./task-list-kanban";
 import { TaskTable } from "./task-table";
 
 interface TaskListContentProps {

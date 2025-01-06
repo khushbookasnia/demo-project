@@ -2,7 +2,7 @@ export type TaskStatus = "done" | "to-do" | "backlog" | "in-progress";
 export type TaskPriority = "low" | "medium" | "high";
 
 export interface Task {
-  id: string;
+  id: number;
   type: "task" | "bug" | "feature" | "improvement";
   key: string;
   summary: string;
@@ -10,7 +10,7 @@ export interface Task {
   labels: string[];
   name: string;
   assignees: {
-    id: string;
+    id: number;
     name: string;
     avatar: string;
   }[];

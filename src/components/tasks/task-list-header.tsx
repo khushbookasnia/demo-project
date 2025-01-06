@@ -57,29 +57,29 @@ export function TaskListHeader({
           <span className="hidden sm:inline">Sort</span>
         </Button>
 
-        <div className="flex items-center space-x-2 rounded-full w-auto border justify-center text-xs ">
+        <div className="flex items-center space-x-2 rounded-full w-auto border justify-center text-xs">
           <Button
             variant="ghost"
-            className={`h-8 p-2 rounded-full flex items-center justify-center ${
+            className={`h-8 p-2 rounded-full flex items-center justify-center transition-all ${
               view === "list"
-                ? "bg-zinc-700 text-white dark:bg-white dark:text-zinc-700 border"
-                : "bg-transparent"
+                ? "!bg-zinc-700 !text-white !dark:bg-white !dark:text-zinc-700 !border"
+                : "bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:border"
             }`}
             onClick={() => onViewChange("list")}
           >
-            <List className="h-2 w-2 " />
+            <List className="h-4 w-4" />
           </Button>
 
           <Button
             variant="ghost"
-            className={`h-8 p-2 rounded-full flex items-center justify-center ${
+            className={`h-8 p-2 rounded-full flex items-center justify-center transition-all ${
               view === "grid"
-                ? "bg-zinc-700 text-white dark:bg-white dark:text-zinc-700 border"
-                : "bg-transparent"
+                ? "!bg-zinc-700 !text-white !dark:bg-white !dark:text-zinc-700 !border"
+                : "bg-transparent hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:border"
             }`}
             onClick={() => onViewChange("grid")}
           >
-            <Grid className="h-2 w-2" />
+            <Grid className="h-4 w-4" />
           </Button>
         </div>
 

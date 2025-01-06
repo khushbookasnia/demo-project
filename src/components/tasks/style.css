@@ -1,0 +1,5 @@
+/* Add this CSS to your global styles or component styles */
+.tilted-card {
+  transform: rotate(5deg); /* Tilt the card */
+  transition: transform 0.2s ease-out; /* Smooth transition for tilt */
+}
