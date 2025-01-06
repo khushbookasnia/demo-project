@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { Badge } from "../ui/badge";
+import styled, { css } from "styled-components";
+
 import { MoreHorizontalIcon, PlusCircle } from "lucide-react";
 import {
   DragDropContext,
@@ -25,20 +27,6 @@ export default function KanbanBoard() {
   const getTasksByStatus = (status: string): Task[] =>
     tasks.filter((task) => task.status === status);
 
-  const onDragStart = (start: { draggableId: string }) => {
-    const draggedCardElement = document.querySelector(
-      `[data-rbd-drag-handle-draggable-id='${start.draggableId}']`
-    );
-
-    if (draggedCardElement) {
-      const rect = draggedCardElement.getBoundingClientRect();
-      setDraggedCardDimensions({
-        height: rect.height,
-        width: rect.width,
-      });
-    }
-  };
-
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
 
@@ -54,7 +42,7 @@ export default function KanbanBoard() {
   };
 
   return (
-    <DragDropContext onDragStart={onDragStart} onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
       <div className="grid grid-cols-4 gap-5 p-4 bg-background rounded-md border">
         {statuses.map((status) => (
           <DroppableColumn
@@ -135,15 +123,41 @@ type TaskCardProps = {
   index: number;
 };
 
+const Issue = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== "isBeingDragged",
+})<{ isBeingDragged?: boolean }>`
+  padding: 10px;
+  border-radius: 3px;
+  background: #fff;
+  border: 1px solid #f2f2f2;
+  transition: background 0.1s;
+  cursor: pointer;
+
+  @media (max-width: 1100px) {
+    padding: 10px 8px;
+  }
+
+  &:hover {
+    background: #f5f5f5;
+  }
+
+  ${(props) =>
+    props.isBeingDragged &&
+    css`
+      transform: rotate(3deg);
+      box-shadow: 5px 10px 30px 0px rgba(9, 30, 66, 0.15);
+    `}
+`;
+
 function TaskCard({ task, index }: TaskCardProps) {
   return (
     <Draggable draggableId={String(task.id)} index={index}>
-      {(provided) => (
-        <div
+      {(provided, snapshot) => (
+        <Issue
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="p-3 rounded-md border shadow-none dark:bg-zinc-800"
+          isBeingDragged={snapshot.isDragging && !snapshot.isDropAnimating}
         >
           <div className="p-0">
             <div className="flex justify-between">
@@ -172,7 +186,7 @@ function TaskCard({ task, index }: TaskCardProps) {
               </Badge>
             )}
           </div>
-        </div>
+        </Issue>
       )}
     </Draggable>
   );
